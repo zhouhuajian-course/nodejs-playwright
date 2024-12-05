@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户反馈</title>
+  <style>
+    div {
+      margin-bottom: 5px;
+    }
+
+    .info {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>用户反馈</h3>
+  <form action="" method="post">
+    <div>内容：</div>
+    <div><textarea name="content" rows="5" required></textarea></div>
+    <div>邮箱：<i>（接收处理结果）</i></div>
+    <div><input name="email" type="email" value="user@email.com" required /></div>
+    <div><button type="submit">提交</button></div>
+  </form>
+  <div id="message" class=""></div>
+
+  <script>
+    const form = document.querySelector("form");
+    const messageDiv = document.querySelector("#message")
+    const textarea = document.querySelector("textarea")
+
+    form.onsubmit = (event) => {
+      event.preventDefault();
+      const content = textarea.value
+      if (content.length < 10) {
+        messageDiv.setAttribute("class", "error")
+        messageDiv.innerHTML = "请输入10个字以上的反馈内容！"
+        return
+      }
+      fetch("/api/feedback", { method: "POST", body: new URLSearchParams(new FormData(form)) })
+        .then((response) => response.json())
+        .then((res) => {
+          messageDiv.setAttribute("class", res.code === 0 ? "info" : "error")
+          messageDiv.innerHTML = res.msg
+          form.reset()
+        });
+    };
+  </script>
+</body>
+
+</html>
