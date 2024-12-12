@@ -34,14 +34,21 @@
   <script>
     const form = document.querySelector("form");
     const messageDiv = document.querySelector("#message")
+    const input = document.querySelector("input")
     const textarea = document.querySelector("textarea")
 
     form.onsubmit = (event) => {
       event.preventDefault();
       const content = textarea.value
+      const email = input.value
       if (content.length < 10) {
         messageDiv.setAttribute("class", "error")
         messageDiv.innerHTML = "请输入10个字以上的反馈内容！"
+        return
+      }
+      if (email === 'user@email.com') {
+        messageDiv.setAttribute("class", "error")
+        messageDiv.innerHTML = "请勿使用默认邮箱地址 user@email.com ！"
         return
       }
       fetch("/api/feedback", { method: "POST", body: new URLSearchParams(new FormData(form)) })
